@@ -1,24 +1,29 @@
-use std::fs;
-use regex::Regex;
 use neon::prelude::*;
+use regex::Regex;
+use std::fs;
 
 fn detect_methods_in_file(mut cx: FunctionContext) -> JsResult<JsString> {
     let file_path = cx.argument::<JsString>(0)?.value(&mut cx);
     let content = fs::read_to_string(file_path).expect("Unable to read file");
 
-    let patterns = vec!["POST", "GET", "DELETE"];
-    let pattern = format!(r"\b(?:{})\b", patterns.join("|"));
-    let re = Regex::new(&pattern).unwrap();
+    // Update patterns to match method and endpoint
+    let re = Regex::new(r#"\b(POST|GET|DELETE)\s*\(\s*\"([^\"]+)\""#).unwrap();
 
-    let mut matches = Vec::new();
-    for mat in re.find_iter(&content) {
-        matches.push(mat.as_str().to_string());
+    let mut curl_commands = Vec::new();
+
+    for caps in re.captures_iter(&content) {
+        let method = caps.get(1).map_or("", |m| m.as_str());
+        let endpoint = caps.get(2).map_or("", |e| e.as_str());
+
+        // Construct the curl command
+        let curl_command = format!("curl -X {} http://localhost:8080{}", method, endpoint);
+        curl_commands.push(curl_command);
     }
 
-    if matches.is_empty() {
+    if curl_commands.is_empty() {
         Ok(cx.string("No HTTP methods detected."))
     } else {
-        let result = matches.join(", ");
+        let result = curl_commands.join(", ");
         Ok(cx.string(result))
     }
 }

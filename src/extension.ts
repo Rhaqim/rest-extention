@@ -11,9 +11,10 @@ export function activate(context: vscode.ExtensionContext) {
 
             const detectedMethods = detectMethodsInFile(document.fileName);
 
+			console.log('detectedMethods', detectedMethods);
+
             if (detectedMethods) {
-                const regex = new RegExp('\\b(' + detectedMethods + ')\\b', 'g');
-                console.log(regex);
+                const regex = new RegExp('\\b(' + 'GET' + ')\\b', 'g');
                 let match;
                 const decorationsArray: vscode.DecorationOptions[] = [];
 
@@ -21,7 +22,6 @@ export function activate(context: vscode.ExtensionContext) {
                     const startPos = document.positionAt(match.index);
                     const endPos = document.positionAt(match.index + match[0].length);
                     const decoration = { range: new vscode.Range(startPos, endPos) };
-                    console.log('decoration', decoration);
                     decorationsArray.push(decoration);
                 }
 
