@@ -9,17 +9,21 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:go"
+  ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
+    "languages": [
       {
-        "command": "rustext.helloWorld",
-        "title": "Hello World"
-      },
-      {
-        "command": "rustext.highlightPatterns",
-        "title": "Highlight Patterns"
+        "id": "go",
+        "aliases": [
+          "Go",
+          "go"
+        ],
+        "extensions": [
+          ".go"
+        ]
       }
     ]
   },
