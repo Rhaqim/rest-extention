@@ -14,6 +14,12 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "rustext.restFile",
+        "title": "Rest File"
+      }
+    ],
     "languages": [
       {
         "id": "go",
